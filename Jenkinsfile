@@ -3,26 +3,28 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "rosh2912/devops-app:${env.BUILD_NUMBER}"
-        AWS_REGION = "us-east-1" // Change as per your setup
+        AWS_REGION = "us-east-1"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/rosh2912/python-project.git'
+                git branch: 'main', url: 'https://github.com/rosh2912/python-project.git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'python -m venv venv'
-                sh 'source venv/Scripts/activate && pip install -r requirements.txt'
+               sh '''
+                    python -m venv venv
+                    . venv/Scripts/activate
+                    pip install -r requirements.txt
+                  '''
             }
         }
 
         stage('Test') {
             steps {
-                // Add testing steps if any
                 echo 'Running tests...'
             }
         }
