@@ -2,8 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "rosh2912/devops-app:${env.BUILD_NUMBER}"
         AWS_REGION = "us-east-1"
+        ECR_REPO = 'my-python-webapp
+        IMAGE_TAG = "${env.BUILD_ID}"
+        AWS_ACCOUNT_ID = '425031467739'
+        ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
     }
 
     stages {
@@ -29,7 +32,32 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    dockerImage = docker.build(DOCKER_IMAGE)
+                    dockerImage = docker.build("${ECR_REPO}:${IMAGE_TAG}")
+                }
+            }
+        }
+        stage('Login to ECR') {
+            steps {
+                script {
+                    sh """
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    """
+                }
+            }
+        }
+
+        stage('Tag Docker Image') {
+            steps {
+                script {
+                    dockerImage.tag("${ECR_URI}:${IMAGE_TAG}")
+                }
+            }
+        }
+
+        stage('Push to ECR') {
+            steps {
+                script {
+                    dockerImage.push()
                 }
             }
         }
