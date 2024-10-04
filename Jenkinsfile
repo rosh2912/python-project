@@ -62,17 +62,6 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
-    }
-
     post {
         always {
             cleanWs()
