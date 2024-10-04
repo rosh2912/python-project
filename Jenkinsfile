@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         AWS_REGION = "us-east-1"
-        ECR_REPO = 'my-python-webapp
+        ECR_REPO = 'my-python-webapp'
         IMAGE_TAG = "${env.BUILD_ID}"
         AWS_ACCOUNT_ID = '425031467739'
         ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
